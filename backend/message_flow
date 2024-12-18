@@ -1,1 +1,5 @@
-// firstly -> message.model.js
+//1. firstly -> message.model.js
+// 2.then route ->/users -> controller -> getUsersForSidebar (write code for this in controller)
+// 3.  in index.js update route mounting for message
+// 4. then route -> :/id for getMessages (controller) -> controller message.controller.js
+// 5. then post route -> /send/:id for sendMessage (controller)
