@@ -1,6 +1,7 @@
 // const express = require("express");
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import cookieParser from "cookie-parser"; // to able to grab the cookies
 const app = express();
 import authRoutes from "./routes/auth.route.js";
@@ -15,6 +16,12 @@ const PORT = process.env.PORT;
 app.use(express.json());
 // Middleware to parse cookies from the incoming request and make them accessible via req.cookies
 app.use(cookieParser()); 
+
+// cors setup
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true
+}))
 
 // Route Mouting
 app.use("/api/auth",authRoutes);
