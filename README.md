@@ -138,7 +138,6 @@ Replace `xxxxxxxx` with your actual credentials, ensuring they are kept secure.
 ---
 
 ## Screenshots
-Add screenshots of your application here for better visualization.
 ![AmiChat Interface](frontend/public/AmiChat.png)
 
 ---
