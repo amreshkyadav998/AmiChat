@@ -119,11 +119,12 @@
 // export default LoginPage;
 
 import { useState, useEffect, useRef } from "react";
-// import { Link } from "react-router-dom"; // Uncomment in your actual app
+import { Link } from "react-router-dom"; // Now uncommented
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
 import * as THREE from 'three';
+import { useAuthStore } from "../store/useAuthStore"; // Now uncommented
 
-// Enhanced Three.js visualization with theme-aware colors
+// EnhancedAuthPattern component remains unchanged
 const EnhancedAuthPattern = ({ title, subtitle }) => {
   const mountRef = useRef(null);
   const sceneRef = useRef(null);
@@ -132,7 +133,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
   const waveMeshRef = useRef(null);
   const [currentTheme, setCurrentTheme] = useState('dark');
 
-  // Theme color configurations
   const themeColors = {
     dark: {
       primary: 0x00ff88,
@@ -160,7 +160,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
     }
   };
 
-  // Detect theme changes
   useEffect(() => {
     const detectTheme = () => {
       const htmlElement = document.documentElement;
@@ -175,7 +174,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
 
     detectTheme();
     
-    // Watch for theme changes
     const observer = new MutationObserver(detectTheme);
     observer.observe(document.documentElement, {
       attributes: true,
@@ -188,7 +186,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
   useEffect(() => {
     if (!mountRef.current) return;
 
-    // Scene setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
     
@@ -210,7 +207,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
     renderer.setClearColor(0x000000, 0);
     mountRef.current.appendChild(renderer.domElement);
 
-    // Floating particle system
     const createParticleSystem = () => {
       const particleCount = 150;
       const particles = new THREE.BufferGeometry();
@@ -230,7 +226,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
           z: (Math.random() - 0.5) * 0.01
         });
 
-        // Set initial colors
         const color = new THREE.Color(themeColors[currentTheme].particleColor);
         colors[i3] = color.r;
         colors[i3 + 1] = color.g;
@@ -253,7 +248,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
       return particleSystem;
     };
 
-    // Animated wave geometry
     const createWaveGeometry = () => {
       const geometry = new THREE.PlaneGeometry(20, 20, 50, 50);
       const material = new THREE.MeshBasicMaterial({
@@ -271,7 +265,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
       return mesh;
     };
 
-    // Connection lines between particles
     const createConnectionLines = () => {
       const lineGeometry = new THREE.BufferGeometry();
       const linePositions = [];
@@ -299,11 +292,9 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
       return new THREE.LineSegments(lineGeometry, lineMaterial);
     };
 
-    // Rotating geometric shapes
     const createGeometricShapes = () => {
       const group = new THREE.Group();
       
-      // Torus
       const torusGeometry = new THREE.TorusGeometry(2, 0.5, 8, 16);
       const torusMaterial = new THREE.MeshBasicMaterial({
         color: themeColors[currentTheme].accent,
@@ -315,7 +306,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
       torus.position.set(-5, 3, -3);
       group.add(torus);
       
-      // Octahedron
       const octaGeometry = new THREE.OctahedronGeometry(1.5);
       const octaMaterial = new THREE.MeshBasicMaterial({
         color: themeColors[currentTheme].primary,
@@ -330,7 +320,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
       return group;
     };
 
-    // Add all elements to scene
     const particleSystem = createParticleSystem();
     const waveGeometry = createWaveGeometry();
     const connectionLines = createConnectionLines();
@@ -343,13 +332,11 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
 
     camera.position.z = 8;
 
-    // Animation loop
     let time = 0;
     const animate = () => {
       requestAnimationFrame(animate);
       time += 0.01;
       
-      // Animate particles
       if (particleSystemRef.current) {
         const { mesh, velocities } = particleSystemRef.current;
         const positions = mesh.geometry.attributes.position.array;
@@ -360,7 +347,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
           positions[i + 1] += velocities[velocityIndex].y;
           positions[i + 2] += velocities[velocityIndex].z;
           
-          // Boundary wrapping
           if (Math.abs(positions[i]) > 12) velocities[velocityIndex].x *= -1;
           if (Math.abs(positions[i + 1]) > 12) velocities[velocityIndex].y *= -1;
           if (Math.abs(positions[i + 2]) > 7) velocities[velocityIndex].z *= -1;
@@ -370,7 +356,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
         mesh.rotation.y += 0.002;
       }
       
-      // Animate wave
       if (waveMeshRef.current) {
         const positions = waveMeshRef.current.geometry.attributes.position.array;
         for (let i = 0; i < positions.length; i += 3) {
@@ -382,13 +367,11 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
         waveMeshRef.current.rotation.z += 0.005;
       }
       
-      // Rotate geometric shapes
       geometricShapes.children.forEach((child, index) => {
         child.rotation.x += 0.01 * (index + 1);
         child.rotation.y += 0.015 * (index + 1);
       });
       
-      // Rotate connection lines
       connectionLines.rotation.x += 0.003;
       connectionLines.rotation.y += 0.005;
       
@@ -397,7 +380,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
     
     animate();
 
-    // Handle resize
     const handleResize = () => updateSize();
     window.addEventListener('resize', handleResize);
 
@@ -414,13 +396,11 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
     };
   }, []);
 
-  // Update colors when theme changes
   useEffect(() => {
     if (!sceneRef.current) return;
 
     const colors = themeColors[currentTheme];
     
-    // Update particle colors
     if (particleSystemRef.current) {
       const colorAttribute = particleSystemRef.current.mesh.geometry.attributes.color.array;
       const color = new THREE.Color(colors.particleColor);
@@ -434,12 +414,10 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
       particleSystemRef.current.mesh.geometry.attributes.color.needsUpdate = true;
     }
     
-    // Update wave color
     if (waveMeshRef.current) {
       waveMeshRef.current.material.color.setHex(colors.waveColor);
     }
     
-    // Update other materials
     sceneRef.current.traverse((child) => {
       if (child.material) {
         if (child.material.type === 'LineBasicMaterial') {
@@ -453,7 +431,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
     <div className="hidden lg:flex items-center justify-center relative overflow-hidden bg-base-100">
       <div ref={mountRef} className="absolute inset-0" />
       
-      {/* Content overlay */}
       <div className="relative z-20 max-w-md text-center px-8">
         <div className="flex justify-center mb-8">
           <div className="relative">
@@ -479,7 +456,6 @@ const EnhancedAuthPattern = ({ title, subtitle }) => {
           {subtitle}
         </p>
         
-        {/* Theme indicator */}
         <div className="flex justify-center gap-2">
           {[...Array(9)].map((_, i) => (
             <div
@@ -508,16 +484,7 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
-  
-  // Mock implementation - replace with your useAuthStore
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const login = (data) => {
-    setIsLoggingIn(true);
-    setTimeout(() => {
-      setIsLoggingIn(false);
-      console.log("Login with:", data);
-    }, 2000);
-  };
+  const { login, isLoggingIn } = useAuthStore(); // Using actual auth store
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -543,8 +510,8 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Form */}
-          <div onSubmit={handleSubmit} className="space-y-6">
+          {/* Form - Restored original form submission */}
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-medium">Email</span>
@@ -592,7 +559,11 @@ const LoginPage = () => {
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary w-full" disabled={isLoggingIn}>
+            <button 
+              type="submit" 
+              className="btn btn-primary w-full" 
+              disabled={isLoggingIn}
+            >
               {isLoggingIn ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -602,14 +573,14 @@ const LoginPage = () => {
                 "Sign in"
               )}
             </button>
-          </div>
+          </form>
 
           <div className="text-center">
             <p className="text-base-content/60">
-              Don&apos;t have an account?{" "}
-              <a href="/signup" className="link link-primary">
+              Don't have an account?{" "}
+              <Link to="/signup" className="link link-primary">
                 Create account
-              </a>
+              </Link>
             </p>
           </div>
         </div>
